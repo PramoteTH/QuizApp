@@ -1,9 +1,12 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=quiz.db"));

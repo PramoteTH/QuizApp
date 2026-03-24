@@ -20,7 +20,7 @@ public class QuestionsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var questions = await _context.Questions
-            .OrderBy(q => q.OrderNumber)
+            .OrderBy(q => q.orderNumber)
             .ToListAsync();
         return Ok(questions);
     }
@@ -29,13 +29,13 @@ public class QuestionsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] Question question)
     {
         var maxOrder = await _context.Questions.AnyAsync()
-            ? await _context.Questions.MaxAsync(q => q.OrderNumber)
+            ? await _context.Questions.MaxAsync(q => q.orderNumber)
             : 0;
-        question.OrderNumber = maxOrder + 1;
+        question.orderNumber = maxOrder + 1;
 
         _context.Questions.Add(question);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetAll), new { id = question.Id }, question);
+        return CreatedAtAction(nameof(GetAll), new { id = question.id }, question);
     }
 
     [HttpDelete("{id}")]
@@ -50,11 +50,11 @@ public class QuestionsController : ControllerBase
 
         // Re-sequence remaining questions
         var remaining = await _context.Questions
-            .OrderBy(q => q.OrderNumber)
+            .OrderBy(q => q.orderNumber)
             .ToListAsync();
 
         for (int i = 0; i < remaining.Count; i++)
-            remaining[i].OrderNumber = i + 1;
+            remaining[i].orderNumber = i + 1;
 
         await _context.SaveChangesAsync();
         return NoContent();
