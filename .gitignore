@@ -1,0 +1,14 @@
+# .NET
+backend/QuizApp/bin/
+backend/QuizApp/obj/
+backend/QuizApp/*.db
+backend/QuizApp/*.db-shm
+backend/QuizApp/*.db-wal
+
+# Node
+frontend/quiz-frontend/node_modules/
+frontend/quiz-frontend/dist/
+
+# Misc
+docx_media/
+docx_content.txt
