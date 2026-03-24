@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.Data;
+using QuizApp.Repositories;
+using QuizApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,9 @@ builder.Services.AddControllers()
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=quiz.db"));
+
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 builder.Services.AddCors(options =>
 {

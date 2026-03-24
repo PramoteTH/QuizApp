@@ -4,6 +4,8 @@ backend/QuizApp/obj/
 backend/QuizApp/*.db
 backend/QuizApp/*.db-shm
 backend/QuizApp/*.db-wal
+backend/**/bin/
+backend/**/obj/
 
 # Node
 frontend/quiz-frontend/node_modules/

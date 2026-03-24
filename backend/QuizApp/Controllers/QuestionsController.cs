@@ -1,62 +1,38 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using QuizApp.Data;
 using QuizApp.Models;
+using QuizApp.Services;
 
 namespace QuizApp.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class QuestionsController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IQuestionService _service;
 
-    public QuestionsController(AppDbContext context)
+    public QuestionsController(IQuestionService service)
     {
-        _context = context;
+        _service = service;
     }
 
-    [HttpGet]
+    [HttpGet("api/questions")]
     public async Task<IActionResult> GetAll()
     {
-        var questions = await _context.Questions
-            .OrderBy(q => q.orderNumber)
-            .ToListAsync();
+        List<Question> questions = await _service.GetAllAsync();
         return Ok(questions);
     }
 
-    [HttpPost]
+    [HttpPost("api/questions")]
     public async Task<IActionResult> Create([FromBody] Question question)
     {
-        var maxOrder = await _context.Questions.AnyAsync()
-            ? await _context.Questions.MaxAsync(q => q.orderNumber)
-            : 0;
-        question.orderNumber = maxOrder + 1;
-
-        _context.Questions.Add(question);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetAll), new { id = question.id }, question);
+        Question created = await _service.CreateAsync(question);
+        return CreatedAtAction(nameof(GetAll), new { id = created.id }, created);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("api/questions/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var question = await _context.Questions.FindAsync(id);
-        if (question == null)
-            return NotFound();
-
-        _context.Questions.Remove(question);
-        await _context.SaveChangesAsync();
-
-        // Re-sequence remaining questions
-        var remaining = await _context.Questions
-            .OrderBy(q => q.orderNumber)
-            .ToListAsync();
-
-        for (int i = 0; i < remaining.Count; i++)
-            remaining[i].orderNumber = i + 1;
-
-        await _context.SaveChangesAsync();
+        bool deleted = await _service.DeleteAsync(id);
+        if (!deleted) return NotFound();
         return NoContent();
     }
 }
