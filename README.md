@@ -1,6 +1,6 @@
 # Quiz App - IT 08
 
-ระบบจัดการข้อสอบ - ThaiBev Technical Test No. 8
+ระบบจัดการข้อสอบ - Test No. 8
 
 ## Tech Stack
 - **Backend**: C# ASP.NET Core 9 Web API + Entity Framework Core + SQLite
